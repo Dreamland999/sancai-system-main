@@ -1,0 +1,28 @@
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+app/node_modules/
+dist/
+app/dist/
+backend/__pycache__/
+algorithm/__pycache__/
+.env
+.env.local
+backend/models/*.onnx
+backend/feedback_log.jsonl
+data/sancai.db
+.DS_Store
+miniapp/unpackage/
+miniapp/static_backup_before_size_optimize/
+backend/static/video/backup_hevc_original/
+autohtml-project2/node_modules/
+reports/feedback_events.csv
+# non-core directories
+.claude/
+app/
+archive/
+autohtml-project2/
+# large data files
+data/*.jpg
+data/*.png

@@ -1,0 +1,13 @@
+{
+  "features": [
+    "twin_score",
+    "body_match",
+    "mood_match",
+    "scene_match",
+    "flavor_match",
+    "temp_match",
+    "health_penalty",
+    "novelty"
+  ],
+  "feature_dim": 8
+}

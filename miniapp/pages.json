@@ -1,0 +1,145 @@
+{
+  "pages": [
+    {
+      "path": "pages/figma-frame383-preview/figma-frame383-preview",
+      "style": {
+        "navigationBarTitleText": "启动页",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame400-preview/figma-frame400-preview",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame396-preview/figma-frame396-preview",
+      "style": {
+        "navigationBarTitleText": "信息采集",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame398-preview/figma-frame398-preview",
+      "style": {
+        "navigationBarTitleText": "实时了解",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame382-preview/figma-frame382-preview",
+      "style": {
+        "navigationBarTitleText": "识别中",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame394-preview/figma-frame394-preview",
+      "style": {
+        "navigationBarTitleText": "状态显化",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame399-preview/figma-frame399-preview",
+      "style": {
+        "navigationBarTitleText": "AI定制",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame390-preview/figma-frame390-preview",
+      "style": {
+        "navigationBarTitleText": "食材搜集",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame389-preview/figma-frame389-preview",
+      "style": {
+        "navigationBarTitleText": "配方选择",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame391-preview/figma-frame391-preview",
+      "style": {
+        "navigationBarTitleText": "自行调整",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame391-animation/figma-frame391-animation",
+      "style": {
+        "navigationBarTitleText": "饮品制作中",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame388-preview/figma-frame388-preview",
+      "style": {
+        "navigationBarTitleText": "支付",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame387-preview/figma-frame387-preview",
+      "style": {
+        "navigationBarTitleText": "确定门店",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame385-preview/figma-frame385-preview",
+      "style": {
+        "navigationBarTitleText": "订单生成",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame386-preview/figma-frame386-preview",
+      "style": {
+        "navigationBarTitleText": "完成订单",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame384-preview/figma-frame384-preview",
+      "style": {
+        "navigationBarTitleText": "食养局",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    },
+    {
+      "path": "pages/figma-frame401-preview/figma-frame401-preview",
+      "style": {
+        "navigationBarTitleText": "安神局",
+        "navigationStyle": "custom",
+        "disableScroll": true
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#93DBD5",
+    "backgroundColor": "#FFFFFF"
+  }
+}
