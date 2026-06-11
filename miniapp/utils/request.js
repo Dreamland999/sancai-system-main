@@ -5,7 +5,7 @@
  * 接后端时将 USE_MOCK 改为 false 并填入真实 baseURL。
  */
 
-export const BASE_URL = 'http://10.191.219.32:8000'
+export const BASE_URL = 'http://10.197.196.246:8000'
 const USE_MOCK = true
 
 /**

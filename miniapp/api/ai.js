@@ -6,7 +6,7 @@
 
 import { isMock, mock } from '@/utils/request.js'
 
-const BASE_URL = 'http://10.191.219.32:8000'
+const BASE_URL = 'http://10.197.196.246:8000'
 
 // ─── AI 对话 ────────────────────────────────────────
 

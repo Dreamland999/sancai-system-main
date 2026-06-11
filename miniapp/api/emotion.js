@@ -5,7 +5,7 @@
  * 请求格式: multipart/form-data, 字段名 file
  */
 
-const BASE_URL = 'http://10.191.219.32:8000';
+const BASE_URL = 'http://10.197.196.246:8000';
 
 export function predictEmotion(filePath, timeout = 10000) {
   return new Promise((resolve, reject) => {

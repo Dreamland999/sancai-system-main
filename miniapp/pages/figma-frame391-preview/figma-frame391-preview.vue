@@ -90,49 +90,64 @@
     </template>
 
     <!-- ============================================================ -->
-    <!-- 状态：iceSugar（Frame402）                                   -->
+    <!-- 状态：iceSugar — 滑块调节冰度/糖度                            -->
     <!-- ============================================================ -->
     <template v-else-if="currentAdjustState === 'iceSugar'">
-      <!-- 杯子（缩小并上移，comp20 容器） -->
-      <view class="comp20">
-        <image class="c20-vector0" src="/static/figma-frame391/vector0.svg" mode="aspectFit" />
-        <image class="c20-g13130" src="/static/figma-frame391/group-13130.svg" mode="aspectFit" />
-        <image class="c20-g13160" src="/static/figma-frame391/group-13160.svg" mode="aspectFit" />
-        <image class="c20-g13170" src="/static/figma-frame391/group-13170.svg" mode="aspectFit" />
-        <image class="c20-g13960" src="/static/figma-frame391/group-13960.svg" mode="aspectFit" />
-        <image class="c20-v1" src="/static/figma-frame391/vector1.svg" mode="aspectFit" />
+      <!-- 杯子（居中） -->
+      <view class="icecup-area">
+        <image class="icecup-v0" src="/static/figma-frame391/vector0.svg" mode="aspectFit" />
+        <image class="icecup-g13" src="/static/figma-frame391/group-13130.svg" mode="aspectFit" />
+        <image class="icecup-g16" src="/static/figma-frame391/group-13160.svg" mode="aspectFit" />
+        <image class="icecup-g17" src="/static/figma-frame391/group-13170.svg" mode="aspectFit" />
+        <image class="icecup-g96" src="/static/figma-frame391/group-13960.svg" mode="aspectFit" />
+        <image class="icecup-v1" src="/static/figma-frame391/vector1.svg" mode="aspectFit" />
       </view>
 
-      <!-- 卡片1：冰度（frame 级定位） -->
-      <view class="c20-card1">
-        <view class="c20-card1-bg"></view>
-        <view class="c20-card1-desc">在屏幕任意区域双指放大缩小以改变冰度~</view>
-        <view class="c20-row">
-          <view class="c20-card1-label">冰度（克）</view>
-          <view class="c20-card1-val">200g/L</view>
+      <!-- 卡片1：冰度 -->
+      <view class="islider-card">
+        <view class="islider-card-bg"></view>
+        <view class="islider-row">
+          <view class="islider-label">冰度</view>
+          <view class="islider-val">{{ iceDisplay }}</view>
+        </view>
+        <view class="islider-wrap">
+          <text class="islider-hint">少冰</text>
+          <slider
+            class="islider-slider"
+            :value="iceLevel"
+            :min="0"
+            :max="5"
+            :step="1"
+            activeColor="#85d2c7"
+            backgroundColor="rgba(133,210,199,0.2)"
+            block-size="22"
+            @change="onIceChange"
+          />
+          <text class="islider-hint">多冰</text>
         </view>
       </view>
 
-      <!-- 卡片2：糖度（frame 级定位） -->
-      <view class="c20-card2">
-        <view class="c20-card2-bg"></view>
-        <view class="c20-card2-desc">长按以下任一按钮以改变糖度</view>
-        <!-- 增大 / 减小按钮 -->
-        <view class="c20-btns">
-          <view class="c20-btn-inc" @tap="onIncrease">
-            <view class="c20-btn-white"></view>
-            <view class="c20-btn-glow"></view>
-            <view class="c20-btn-text">增大</view>
-          </view>
-          <view class="c20-btn-dec" @tap="onDecrease">
-            <view class="c20-btn-white"></view>
-            <view class="c20-btn-glow"></view>
-            <view class="c20-btn-text">减小</view>
-          </view>
+      <!-- 卡片2：糖度 -->
+      <view class="islider-card islider-card2">
+        <view class="islider-card-bg"></view>
+        <view class="islider-row">
+          <view class="islider-label">糖度</view>
+          <view class="islider-val">{{ sugarDisplay }}</view>
         </view>
-        <view class="c20-row">
-          <view class="c20-card2-label">糖度（克）</view>
-          <view class="c20-card2-val">200g/L</view>
+        <view class="islider-wrap">
+          <text class="islider-hint">少糖</text>
+          <slider
+            class="islider-slider"
+            :value="sugarLevel"
+            :min="0"
+            :max="5"
+            :step="1"
+            activeColor="#85d2c7"
+            backgroundColor="rgba(133,210,199,0.2)"
+            block-size="22"
+            @change="onSugarChange"
+          />
+          <text class="islider-hint">多糖</text>
         </view>
       </view>
     </template>
@@ -144,17 +159,33 @@
       <view class="package-content">
         <!-- component-13 主区域 -->
         <view class="package-main">
-          <!-- 右上包材选项（每个图案绑定固定 option，不再循环） -->
-          <image class="package-pat-blue" src="/static/figma-frame391/rectangle-13611.png" mode="aspectFill" @tap="selectPackageStyle(packageOptions[0])" />
-          <image class="package-pat-color" src="/static/figma-frame391/rectangle-13620.png" mode="aspectFill" @tap="selectPackageStyle(packageOptions[1])" />
+          <!-- 上方候选区（2 个槽位，按 index 定位，selectedPackageKey 变化时强制重建） -->
+          <view class="package-candidates" :key="'candidates-' + selectedPackageKey">
+            <image
+              v-for="(option, index) in candidatePackageOptions"
+              :key="selectedPackageKey + '-' + option.key + '-' + index"
+              :class="['package-candidate-img', index === 0 ? 'candidate-slot-1' : 'candidate-slot-2']"
+              :src="option.thumb"
+              mode="scaleToFill"
+              @tap="selectPackageStyle(option)"
+            />
+          </view>
 
           <!-- 杯子底图（group-13450.svg 原属装饰插件2，preview 阶段临时复用） -->
           <image class="package-cup-base" src="/static/figma-frame391/group-13450.svg" mode="scaleToFill" />
 
-          <!-- 杯套前景层（覆盖杯子下半部） -->
-          <image v-if="selectedSleeve" class="package-sleeve-left" :src="selectedSleeve" mode="scaleToFill" />
-          <image v-if="!selectedSleeve" class="package-sleeve-left" src="/static/figma-frame391/group-13390.svg" mode="scaleToFill" />
-          <image class="package-sleeve-right" src="/static/figma-frame391/rectangle-13610.png" mode="scaleToFill" @tap="resetSleeve" />
+          <!-- 左侧杯套（覆盖杯子下半部） -->
+          <image v-if="currentSleeve" class="package-sleeve-left" :key="'sleeve-' + selectedPackageKey" :src="currentSleeve" mode="scaleToFill" />
+          <image v-if="!currentSleeve" class="package-sleeve-left" :key="'sleeve-default-' + selectedPackageKey" src="/static/figma-frame391/group-13390.svg" mode="scaleToFill" />
+          <!-- 右侧横向包装（当前选中展示，不可点击切换） -->
+          <view class="package-sleeve-right">
+            <image
+              class="package-wrap-img"
+              :key="'wrap-' + selectedPackageKey"
+              :src="currentWrap"
+              mode="scaleToFill"
+            />
+          </view>
         </view>
 
         <!-- 提示文案 -->
@@ -283,16 +314,37 @@ export default {
   name: "FigmaFrame391Preview",
   data() {
     const recipe = getCurrentRecipe();
+    const savedConfig = uni.getStorageSync('custom_recipe_config') || {};
     return {
       currentAdjustState: "top",
       particlesTopMid: PARTICLE_SET_TOP_MID,
       currentRecipe: recipe,
       config: initConfig(recipe),
+      iceLevel: savedConfig.iceLevel != null ? savedConfig.iceLevel : 4,
+      sugarLevel: savedConfig.sugarLevel != null ? savedConfig.sugarLevel : 4,
+      lastIceLevel: savedConfig.iceLevel != null ? savedConfig.iceLevel : 4,
+      lastSugarLevel: savedConfig.sugarLevel != null ? savedConfig.sugarLevel : 4,
       packageOptions: [
-        { key: 'blue_geometry', label: '蓝色几何', sleeve: '/static/figma-frame391/sleeve-blue.png' },
-        { key: 'color_wave', label: '多彩渐变', sleeve: '/static/figma-frame391/sleeve-color.png' },
+        {
+          key: 'default_green', label: '原色',
+          thumb: '/static/figma-frame391/package-thumb-default.png',
+          sleeve: '',
+          wrap: '/static/figma-frame391/package-wrap-default.png',
+        },
+        {
+          key: 'blue_geometry', label: '蓝色',
+          thumb: '/static/figma-frame391/package-thumb-blue.png',
+          sleeve: '/static/figma-frame391/sleeve-blue.png',
+          wrap: '/static/figma-frame391/package-wrap-blue.png',
+        },
+        {
+          key: 'color_wave', label: '多彩',
+          thumb: '/static/figma-frame391/package-thumb-color.png',
+          sleeve: '/static/figma-frame391/sleeve-color.png',
+          wrap: '/static/figma-frame391/package-wrap-color.png',
+        },
       ],
-      selectedSleeve: '',
+      selectedPackageKey: 'default_green',
       selectedSprinkleIdx: 0,
       sprinkleOptions: [
         { key: 'star_candy', label: '星星糖果' },
@@ -301,7 +353,24 @@ export default {
       ],
     };
   },
+  mounted() {
+    const savedConfig = uni.getStorageSync('custom_recipe_config') || {};
+    const savedKey = savedConfig.packageKey;
+    if (savedKey && this.packageOptions.some(item => item.key === savedKey)) {
+      this.selectedPackageKey = savedKey;
+    }
+  },
   computed: {
+    currentPackageOption() {
+      return this.packageOptions.find(item => item.key === this.selectedPackageKey)
+        || this.packageOptions.find(item => item.key === 'default_green');
+    },
+    currentSleeve() {
+      return this.currentPackageOption ? this.currentPackageOption.sleeve : '';
+    },
+    currentWrap() {
+      return this.currentPackageOption ? this.currentPackageOption.wrap : '';
+    },
     topMidFruit() {
       if (this.currentAdjustState === "top") {
         return [{ s: "10", l: 6, t: 630 }, { s: "20", l: 70, t: 596 }, { s: "30", l: 160, t: 616 }];
@@ -310,6 +379,15 @@ export default {
     },
     recipeName() {
       return this.currentRecipe.name || '茉莉+抹茶奶昔';
+    },
+    iceDisplay() {
+      return (this.iceLevel * 50) + 'g/L';
+    },
+    sugarDisplay() {
+      return (this.sugarLevel * 50) + 'g/L';
+    },
+    candidatePackageOptions() {
+      return this.packageOptions.filter(item => item.key !== this.selectedPackageKey);
     },
   },
   methods: {
@@ -347,28 +425,43 @@ export default {
         uni.showToast({ title: '确定', icon: 'none' });
       }
     },
-    onIncrease() {
-      this.config.sugar = Math.min(300, (this.config.sugar || 200) + 10);
-      this.config.ice = Math.min(300, (this.config.ice || 200) + 10);
+    onIceChange(e) {
+      const v = e.detail.value;
+      if (v !== this.lastIceLevel) {
+        this.lastIceLevel = v;
+        this.triggerLightHaptic();
+      }
+      this.iceLevel = v;
+      this.config.ice = v * 50;
       this.syncConfig();
-      uni.showToast({ title: '增大: ' + this.config.sugar + 'g/L', icon: 'none' });
     },
-    onDecrease() {
-      this.config.sugar = Math.max(0, (this.config.sugar || 200) - 10);
-      this.config.ice = Math.max(0, (this.config.ice || 200) - 10);
+    onSugarChange(e) {
+      const v = e.detail.value;
+      if (v !== this.lastSugarLevel) {
+        this.lastSugarLevel = v;
+        this.triggerLightHaptic();
+      }
+      this.sugarLevel = v;
+      this.config.sugar = v * 50;
       this.syncConfig();
-      uni.showToast({ title: '减小: ' + this.config.sugar + 'g/L', icon: 'none' });
+    },
+    triggerLightHaptic() {
+      try {
+        uni.vibrateShort({
+          type: 'light',
+          fail: () => {}
+        });
+      } catch (e) {}
     },
     resetSleeve() {
-      this.selectedSleeve = '';
+      this.selectedPackageKey = 'default_green';
+      this.savePackageConfig();
     },
     selectPackageStyle(option) {
-      this.config.package_style = option.key;
-      this.config.package_style_label = option.label;
-      this.selectedSleeve = option.sleeve || '';
-      this.syncConfig();
+      if (!option || !option.key) return;
+      this.selectedPackageKey = option.key;
+      this.savePackageConfig();
       console.log('[Frame391] package selected:', option);
-      uni.showToast({ title: '已选择：' + option.label, icon: 'none' });
     },
     selectSprinkle(option, idx) {
       this.config.sprinkle = option.key;
@@ -392,8 +485,30 @@ export default {
       this.config.particle_size = vals[(idx + 1) % vals.length];
       this.syncConfig();
     },
+    savePackageConfig() {
+      const current = this.currentPackageOption;
+      if (!current) return;
+      const oldConfig = uni.getStorageSync('custom_recipe_config') || {};
+      const nextConfig = {
+        ...oldConfig,
+        packageKey: current.key,
+        sleeve: current.sleeve,
+        wrap: current.wrap,
+      };
+      uni.setStorageSync('custom_recipe_config', nextConfig);
+      this.config = { ...this.config, ...nextConfig };
+      console.log('[Frame391] package config saved', nextConfig);
+    },
     syncConfig() {
+      const current = this.currentPackageOption || {};
       this.config.adjust_state = this.currentAdjustState;
+      this.config.iceLevel = this.iceLevel;
+      this.config.sugarLevel = this.sugarLevel;
+      this.config.ice = this.iceLevel * 50;
+      this.config.sugar = this.sugarLevel * 50;
+      this.config.packageKey = this.selectedPackageKey;
+      this.config.sleeve = current.sleeve || '';
+      this.config.wrap = current.wrap || '';
       uni.setStorageSync('custom_recipe_config', this.config);
       console.log('[Frame391] custom_recipe_config updated', this.config);
     },
@@ -463,39 +578,25 @@ export default {
 .card-gran-val { color: #333; font-family: "PingFangSc-Heavy", sans-serif; font-size: 28rpx; font-weight: 400; position: absolute; left: 200rpx; top: 118rpx; }
 .dot-img { width: 36rpx; height: 34rpx; position: absolute; left: 130rpx; top: 120rpx; }
 
-/* ===== iceSugar 容器（Frame402 component-20 缩放 0.75，上移）===== */
-.comp20 { position: absolute; left: 170rpx; top: 260rpx; width: 411rpx; height: 598rpx; }
+/* ===== iceSugar 杯子（居中） ===== */
+.icecup-area { position: absolute; left: 170rpx; top: 260rpx; width: 411rpx; height: 480rpx; }
+.icecup-v0  { width: 155rpx; height: 56rpx;  position: absolute; left: 127rpx; top: 236rpx; }
+.icecup-g13 { width: 189rpx; height: 196rpx; position: absolute; left: 108rpx; top: 112rpx; }
+.icecup-g16 { width: 210rpx; height: 123rpx; position: absolute; left: 99rpx;  top: 39rpx; }
+.icecup-g17 { width: 209rpx; height: 116rpx; position: absolute; left: 99rpx;  top: 65rpx; }
+.icecup-g96 { width: 223rpx; height: 116rpx; position: absolute; left: 90rpx;  top: 0; }
+.icecup-v1  { width: 26rpx;  height: 240rpx; position: absolute; left: 266rpx; top: 52rpx; }
 
-/* iceSugar 杯子 SVG（相对于 comp20，按原始百分比 × 缩放容器尺寸） */
-.c20-vector0 { width: 155rpx; height: 56rpx;  position: absolute; left: 127rpx; top: 236rpx; }
-.c20-g13130  { width: 189rpx; height: 196rpx; position: absolute; left: 108rpx; top: 112rpx; }
-.c20-g13160  { width: 210rpx; height: 123rpx; position: absolute; left: 99rpx;  top: 39rpx; }
-.c20-g13170  { width: 209rpx; height: 116rpx; position: absolute; left: 99rpx;  top: 65rpx; }
-.c20-g13960  { width: 223rpx; height: 116rpx; position: absolute; left: 90rpx;  top: 0; }
-.c20-v1      { width: 26rpx;  height: 240rpx; position: absolute; left: 266rpx; top: 52rpx; }
-
-/* iceSugar 卡片1：冰度（frame 级，杯下） */
-.c20-card1 { position: absolute; left: 60rpx; top: 820rpx; width: 530rpx; height: 150rpx; }
-.c20-card1-bg { background: rgba(133,236,221,0.2); border-radius: 12rpx; width: 530rpx; height: 150rpx; position: absolute; left: 0; top: 0; }
-.c20-card1-desc { color: #666; font-family: "PingFangSc-Regular", sans-serif; font-size: 24rpx; font-weight: 400; position: absolute; left: 24rpx; top: 12rpx; right: 24rpx; line-height: 34rpx; }
-.c20-card1 .c20-row { position: absolute; left: 24rpx; right: 24rpx; bottom: 18rpx; display: flex; flex-direction: row; justify-content: space-between; align-items: center; }
-.c20-card1-label { color: #666; font-family: "PingFangSc-Regular", sans-serif; font-size: 28rpx; font-weight: 400; white-space: nowrap; }
-.c20-card1-val { color: #333; font-family: "PingFangSc-Heavy", sans-serif; font-size: 28rpx; font-weight: 400; white-space: nowrap; text-align: right; }
-
-/* iceSugar 卡片2：糖度（frame 级，紧跟卡片1） */
-.c20-card2 { position: absolute; left: 60rpx; top: 990rpx; width: 530rpx; height: 260rpx; }
-.c20-card2-bg { background: rgba(133,236,221,0.2); border-radius: 12rpx; width: 530rpx; height: 260rpx; position: absolute; left: 0; top: 0; }
-.c20-card2-desc { color: #666; text-align: center; font-family: "PingFangSc-Regular", sans-serif; font-size: 24rpx; font-weight: 400; position: absolute; left: 24rpx; top: 14rpx; right: 24rpx; }
-.c20-card2 .c20-row { position: absolute; left: 24rpx; right: 24rpx; bottom: 22rpx; display: flex; flex-direction: row; justify-content: space-between; align-items: center; }
-.c20-card2-label { color: #666; font-family: "PingFangSc-Regular", sans-serif; font-size: 28rpx; font-weight: 400; white-space: nowrap; }
-.c20-card2-val { color: #333; font-family: "PingFangSc-Heavy", sans-serif; font-size: 28rpx; font-weight: 400; white-space: nowrap; text-align: right; }
-
-/* 增大 / 减小按钮（卡片2 内部） */
-.c20-btns { position: absolute; left: 0; right: 0; top: 40rpx; display: flex; flex-direction: row; justify-content: center; gap: 120rpx; }
-.c20-btn-inc, .c20-btn-dec { position: relative; width: 96rpx; height: 96rpx; }
-.c20-btn-white { background: #fff; border-radius: 50%; width: 96rpx; height: 96rpx; position: absolute; left: 0; top: 0; }
-.c20-btn-glow { background: rgba(122,233,217,0.8); border-radius: 50%; width: 72rpx; height: 72rpx; position: absolute; left: 12rpx; top: 12rpx; filter: blur(20rpx); }
-.c20-btn-text { color: #fff; text-align: center; font-family: "ZCOOL XiaoWei", "Songti SC", "STSong", "KaiTi", serif; font-size: 28rpx; font-weight: 400; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 96rpx; }
+/* ===== iceSugar 滑块卡片（共用） ===== */
+.islider-card { position: absolute; left: 60rpx; right: 60rpx; width: 630rpx; height: 170rpx; top: 760rpx; }
+.islider-card2 { top: 950rpx; }
+.islider-card-bg { background: rgba(133,210,199,0.12); border-radius: 16rpx; width: 100%; height: 100%; position: absolute; left: 0; top: 0; }
+.islider-row { position: absolute; left: 28rpx; right: 28rpx; top: 16rpx; display: flex; flex-direction: row; justify-content: space-between; align-items: baseline; }
+.islider-label { color: #666; font-family: "PingFangSc-Medium", sans-serif; font-size: 28rpx; font-weight: 500; }
+.islider-val { color: #333; font-family: "PingFangSc-Heavy", sans-serif; font-size: 28rpx; font-weight: 400; }
+.islider-wrap { position: absolute; left: 20rpx; right: 20rpx; top: 60rpx; display: flex; flex-direction: row; align-items: center; gap: 12rpx; }
+.islider-slider { flex: 1; margin: 0 4rpx; }
+.islider-hint { color: #aaa; font-family: "PingFangSc-Regular", sans-serif; font-size: 22rpx; white-space: nowrap; min-width: 56rpx; text-align: center; }
 
 /* ===== package 状态 ===== */
 .package-content { width: 750rpx; min-height: 1624rpx; background: #fff; position: relative; overflow: hidden; }
@@ -506,17 +607,29 @@ export default {
 .package-main {    left: 0;     top: 390rpx; width: 750rpx; height: 670rpx; z-index: auto; }
 
 /* -- 杯子底图（group-13450.svg，原属装饰插件2，preview 阶段临时复用） -- */
-.package-cup-base     { left: 30rpx;  top: 200rpx; width: 300rpx; height: 360rpx; z-index: 2; }
+.package-cup-base     { left: 30rpx;  top: 200rpx; width: 300rpx; height: 360rpx; z-index: 0; }
 
 /* -- 杯套左侧 -- */
-.package-sleeve-left  { left: 75rpx;  top: 380rpx; width: 210rpx; height: 188rpx; z-index: 3; }
+.package-sleeve-left  { left: 75rpx;  top: 380rpx; width: 210rpx; height: 188rpx; z-index: 2; }
 
-/* -- 杯套右侧 -- */
-.package-sleeve-right { left: 240rpx; top: 400rpx; width: 420rpx; height: 146rpx; z-index: 1; }
+/* -- 右侧横向包装（仅布局，无装饰） -- */
+.package-sleeve-right {
+  position: absolute;
+  left: 220rpx; top: 375rpx;
+  width: 450rpx; height: 190rpx;
+  z-index: 1;
+}
+.package-wrap-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
-/* -- 右上包材选项 -- */
-.package-pat-blue     { left: 344rpx; top: -10rpx;  width: 320rpx; height: 146rpx; z-index: 1; }
-.package-pat-color    { left: 344rpx; top: 190rpx; width: 320rpx; height: 146rpx; z-index: 1; }
+/* -- 上方候选区（2 个显式槽位，按 index 定位，仅布局无装饰） -- */
+.package-candidates { position: absolute; left: 0; top: 0; z-index: 10; }
+.package-candidate-img { position: absolute; width: 350rpx; height: 160rpx; }
+.candidate-slot-1 { left: 310rpx; top: -5rpx; }
+.candidate-slot-2 { left: 310rpx; top: 185rpx; }
 
 /* -- 提示文案 -- */
 .package-tip          { left: 214rpx; top: 1178rpx; }
@@ -529,15 +642,9 @@ export default {
 .package-main,
 .package-cup-base,
 .package-sleeve-left,
-.package-sleeve-right,
-.package-pat-blue,
-.package-pat-color,
+.package-candidates,
 .package-tip,
 .package-btn { position: absolute; }
-
-/* 包材选项装饰 */
-.package-pat-blue,
-.package-pat-color { border-radius: 100rpx; box-shadow: 0 8rpx 8rpx rgba(0,0,0,0.1); }
 
 /* 提示文案 */
 .package-tip { color: #666; text-align: center; font-family: "PingFangSc-Regular", sans-serif; font-size: 28rpx; font-weight: 400; }

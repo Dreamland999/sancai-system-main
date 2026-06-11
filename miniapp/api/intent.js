@@ -4,7 +4,7 @@
  * 优先走真实后端，失败时 fallback 到前端关键词匹配。
  */
 
-const BASE_URL = 'http://10.191.219.32:8000'
+const BASE_URL = 'http://10.197.196.246:8000'
 
 const KEYWORD_RULES = [
   // body

@@ -1,7 +1,7 @@
 /**
  * AI 状态推理 API — 综合 emotion_result + recommend_input + 消息 + 偏好
  */
-const BASE_URL = 'http://10.191.219.32:8000';
+const BASE_URL = 'http://10.197.196.246:8000';
 
 const DEFAULT_PROFILE = {
   flavor_preference: [],

@@ -4,7 +4,7 @@
  * 失败时静默，不阻断主流程。
  */
 
-const BASE_URL = 'http://10.191.219.32:8000'
+const BASE_URL = 'http://10.197.196.246:8000'
 
 /**
  * @param {string} eventType
