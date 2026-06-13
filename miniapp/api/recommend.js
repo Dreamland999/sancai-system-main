@@ -6,7 +6,7 @@
 
 import { post } from '@/utils/request.js'
 
-const BASE_URL = 'http://10.197.196.246:8000'
+const BASE_URL = 'http://10.191.133.249:8000'
 
 function defaultPayload() {
   return {

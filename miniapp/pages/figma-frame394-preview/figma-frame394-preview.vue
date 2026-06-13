@@ -1,82 +1,155 @@
 <template>
-  <view class="frame-394">
-    <!-- 顶部白色底色 -->
-    <view class="top-bar"></view>
-
-    <!-- 假状态栏已移除（真机系统自带） -->
-
-    <!-- 假底部 Home Indicator 已移除（真机系统自带） -->
-
-    <!-- 返回箭头 -->
-    <view class="back-hit" @tap="onBack">
-      <image class="ico-back" src="/static/figma-frame394/right0.svg" mode="aspectFit" />
-    </view>
-    <!-- 标题 -->
-    <view class="txt-title">状态显化</view>
-    <!-- 历史 -->
-    <view class="txt-history" @tap="onHistory">历史</view>
-
-    <!-- ===== 三个主题图标 ===== -->
-    <!-- 形 — 绿色 — 身体状态 -->
-    <view
-      class="state-item state-item-l1"
-      :class="{ 'state-active': selectedCategory === 'body' }"
-      @tap="onTapCategory('body')"
-    >
-      <view class="state-glow state-glow-green"></view>
-      <view class="state-ring state-ring-green"></view>
-      <image class="state-icon state-icon-1" src="/static/figma-frame394/group-13620.svg" mode="aspectFit" />
-      <view class="state-label" :class="{ 'state-label-active': selectedCategory === 'body' }">形</view>
-    </view>
-
-    <!-- 心 — 粉色 — 情绪心境 -->
-    <view
-      class="state-item state-item-l2"
-      :class="{ 'state-active': selectedCategory === 'mood' }"
-      @tap="onTapCategory('mood')"
-    >
-      <view class="state-glow state-glow-pink"></view>
-      <view class="state-ring state-ring-pink"></view>
-      <image class="state-icon state-icon-2" src="/static/figma-frame394/group-13621.svg" mode="aspectFit" />
-      <view class="state-label" :class="{ 'state-label-active': selectedCategory === 'mood' }">心</view>
-    </view>
-
-    <!-- 境 — 橙色 — 外部环境 -->
-    <view
-      class="state-item state-item-l3"
-      :class="{ 'state-active': selectedCategory === 'scene' }"
-      @tap="onTapCategory('scene')"
-    >
-      <view class="state-glow state-glow-orange"></view>
-      <view class="state-ring state-ring-orange"></view>
-      <image class="state-icon state-icon-3" src="/static/figma-frame394/group-13622.svg" mode="aspectFit" />
-      <view class="state-label" :class="{ 'state-label-active': selectedCategory === 'scene' }">境</view>
-    </view>
-
-    <!-- 分类标签卡片 -->
-    <view v-if="selectedCategory && currentCategoryCfg" class="body-card">
-      <image class="card-bg" src="/static/figma-frame394/union0.svg" mode="aspectFit" />
-      <view class="card-close" @tap="closeCard">收起 ▴</view>
-      <view class="card-title">{{ currentCategoryCfg.label }}</view>
-      <view class="card-tags">
-        <view
-          v-for="tag in currentCategoryCfg.tags"
-          :key="tag"
-          class="card-tag"
-          :class="{ 'tag-selected': selectedByField[selectedCategory].indexOf(tag) !== -1 }"
-          @tap="onToggleTag(tag)"
-        >{{ tag }}</view>
+  <view class="page" :style="{ paddingTop: statusBarHeight + 'px' }">
+    <!-- ===== 顶部导航栏 ===== -->
+    <view class="nav-bar">
+      <view class="nav-back" @tap="onBack">
+        <image class="nav-back-icon" src="/static/figma-frame394-new/back-arrow.png" mode="aspectFit" />
       </view>
+      <text class="nav-title">状态显化</text>
+      <text class="nav-history" @tap="onHistory">历史</text>
     </view>
 
-    <!-- 下一步按钮 -->
-    <view
-      class="btn-next"
-      :class="{ 'btn-next-active': hasAnySelection }"
-      @tap="onNext"
+    <!-- ===== 中间可滚动内容 ===== -->
+    <scroll-view
+      class="content-scroll"
+      scroll-y="true"
+      :style="{ height: scrollHeight + 'px' }"
+      :show-scrollbar="false"
+      :enhanced="true"
     >
-      <view class="btn-next-bg"></view>
-      <view class="btn-next-text">下一步</view>
+      <!-- 主标题区 -->
+      <view class="title-section">
+        <view class="main-title-row">
+          <view class="hero-title-wrap">
+            <text class="main-title">选择此刻的状态</text>
+            <image class="title-leaf" src="/static/figma-frame394-new/decor-leaf.png" mode="aspectFit" />
+          </view>
+        </view>
+        <view class="subtitle-row">
+          <text class="subtitle-text">观照当下，三才调和，食养身心</text>
+        </view>
+      </view>
+
+      <!-- ===== 三才卡片：形 · 躯体状态 ===== -->
+      <view
+        class="sancai-card"
+        :class="{ 'card-active': selectedCategory === 'body' }"
+        @tap="onTapCategory('body')"
+      >
+        <view class="card-bg card-bg-body">
+          <!-- 左侧图标 -->
+          <image class="card-badge-img" src="/static/figma-frame394-new/sancai-body-symbol.png" mode="aspectFit" />
+          <!-- 中间信息区 -->
+          <view class="card-info">
+            <text class="card-label">形·躯体状态</text>
+            <text class="card-desc-1">身体的感受与能量</text>
+            <text class="card-desc-2">气血、脏腑、体能状态</text>
+            <view v-if="selectedByField.body.length > 0" class="card-tags-preview">
+              <text v-for="t in selectedByField.body" :key="t" class="card-tag-chip">{{ t }}</text>
+            </view>
+          </view>
+          <!-- 右侧装饰图 -->
+          <image class="card-illust" src="/static/figma-frame394-new/card-body-illustration.png" mode="aspectFit" />
+          <!-- 展开提示 -->
+          <image class="card-expand-arrow" :class="{ 'card-expand-arrow-open': selectedCategory === 'body' }" src="/static/figma-frame394-new/card-body-arrow.png" mode="aspectFit" />
+        </view>
+      </view>
+
+      <!-- ===== 三才卡片：心 · 情志状态 ===== -->
+      <view
+        class="sancai-card"
+        :class="{ 'card-active': selectedCategory === 'mood' }"
+        @tap="onTapCategory('mood')"
+      >
+        <view class="card-bg card-bg-mood">
+          <!-- 左侧图标 -->
+          <image class="card-badge-img" src="/static/figma-frame394-new/sancai-mood-symbol.png" mode="aspectFit" />
+          <view class="card-info">
+            <text class="card-label">心·情志状态</text>
+            <text class="card-desc-1">情绪与心理的感受</text>
+            <text class="card-desc-2">喜怒、思虑、情绪状态</text>
+            <view v-if="selectedByField.mood.length > 0" class="card-tags-preview">
+              <text v-for="t in selectedByField.mood" :key="t" class="card-tag-chip">{{ t }}</text>
+            </view>
+          </view>
+          <image class="card-illust" src="/static/figma-frame394-new/card-mood-illustration.png" mode="aspectFit" />
+          <image class="card-expand-arrow" :class="{ 'card-expand-arrow-open': selectedCategory === 'mood' }" src="/static/figma-frame394-new/card-mood-arrow.png" mode="aspectFit" />
+        </view>
+      </view>
+
+      <!-- ===== 三才卡片：境 · 环境状态 ===== -->
+      <view
+        class="sancai-card"
+        :class="{ 'card-active': selectedCategory === 'scene' }"
+        @tap="onTapCategory('scene')"
+      >
+        <view class="card-bg card-bg-scene">
+          <!-- 左侧图标 -->
+          <image class="card-badge-img" src="/static/figma-frame394-new/sancai-scene-symbol.png" mode="aspectFit" />
+          <view class="card-info">
+            <text class="card-label">境·环境状态</text>
+            <text class="card-desc-1">所处环境的影响</text>
+            <text class="card-desc-2">季节、气候、生活环境</text>
+            <view v-if="selectedByField.scene.length > 0" class="card-tags-preview">
+              <text v-for="t in selectedByField.scene" :key="t" class="card-tag-chip">{{ t }}</text>
+            </view>
+          </view>
+          <image class="card-illust" src="/static/figma-frame394-new/card-scene-illustration.png" mode="aspectFit" />
+          <image class="card-expand-arrow" :class="{ 'card-expand-arrow-open': selectedCategory === 'scene' }" src="/static/figma-frame394-new/card-scene-arrow.png" mode="aspectFit" />
+        </view>
+      </view>
+
+      <!-- ===== 标签选择面板 ===== -->
+      <view v-if="selectedCategory && currentCategoryCfg" class="tag-panel">
+        <view class="tag-panel-head">
+          <text class="tag-panel-title">{{ currentCategoryCfg.label }}</text>
+          <view class="tag-panel-collapse" @tap.stop="closeCard">
+            <image class="collapse-ico" src="/static/figma-frame394-new/icon-collapse.png" mode="aspectFit" />
+            <text class="collapse-txt">收起</text>
+          </view>
+        </view>
+        <view class="tag-panel-grid">
+          <view
+            v-for="tag in currentCategoryCfg.tags"
+            :key="tag"
+            class="tag-btn"
+            :class="{ 'tag-btn-on': selectedByField[selectedCategory].indexOf(tag) !== -1 }"
+            @tap.stop="onToggleTag(tag)"
+          >
+            <image
+              v-if="getTagIcon(tag)"
+              class="tag-btn-icon"
+              :src="getTagIcon(tag)"
+              mode="aspectFit"
+            />
+            <text class="tag-btn-text">{{ tag }}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 三才状态 / 了解三才 —— 始终显示 -->
+      <view class="sancai-link">
+        <image class="sancai-link-icon" src="/static/figma-frame394-new/icon-sancai.png" mode="aspectFit" />
+        <text class="sancai-link-label">三才状态</text>
+        <text class="sancai-link-text">了解三才</text>
+      </view>
+
+      <view class="bottom-spacer"></view>
+    </scroll-view>
+
+    <!-- ===== 底部固定区 ===== -->
+    <view class="bottom-bar" :style="{ paddingBottom: bottomBarPadding + 'px' }">
+      <view class="footer-tip">
+        <image class="footer-tip-icon" src="/static/figma-frame394-new/decor-leaf.png" mode="aspectFit" />
+        <text class="footer-tip-text">从内观照，由食养调，回归平衡</text>
+      </view>
+      <view
+        class="btn-next"
+        :class="{ 'btn-next-active': hasAnySelection }"
+        @tap="onNext"
+      >
+        <text class="btn-next-text">下一步</text>
+      </view>
     </view>
   </view>
 </template>
@@ -110,6 +183,17 @@ const DEFAULT_INPUT = {
 };
 const EDITABLE_FIELDS = ['body', 'mood', 'scene'];
 
+const MOOD_ICON_MAP = {
+  '开心': '/static/figma-frame394-new/mood-kaixin.png',
+  '平静': '/static/figma-frame394-new/mood-pingjing.png',
+  '兴奋': '/static/figma-frame394-new/mood-xingfen.png',
+  '低落': '/static/figma-frame394-new/mood-diluo.png',
+  '烦躁': '/static/figma-frame394-new/mood-fanzao.png',
+  '紧张': '/static/figma-frame394-new/mood-jinzhang.png',
+  '无聊': '/static/figma-frame394-new/mood-wuliao.png',
+  '孤单': '/static/figma-frame394-new/mood-gudan.png'
+};
+
 function loadExistingInput() {
   try {
     const input = uni.getStorageSync('recommend_input');
@@ -134,7 +218,11 @@ export default {
         body: false,
         mood: false,
         scene: false
-      }
+      },
+      statusBarHeight: 0,
+      scrollHeight: 0,
+      bottomSafe: 0,
+      bottomBarPadding: 0
     };
   },
   computed: {
@@ -149,6 +237,9 @@ export default {
       });
     }
   },
+  created() {
+    this.calcLayout();
+  },
   methods: {
     onBack() {
       goBack();
@@ -157,7 +248,11 @@ export default {
       uni.showToast({ title: "历史", icon: "none" });
     },
     onTapCategory(category) {
-      this.selectedCategory = category;
+      if (this.selectedCategory === category) {
+        this.selectedCategory = null;
+      } else {
+        this.selectedCategory = category;
+      }
     },
     closeCard() {
       this.selectedCategory = null;
@@ -168,27 +263,22 @@ export default {
       const arr = this.selectedByField[this.selectedCategory];
       const idx = arr.indexOf(tag);
 
-      // scene: 单选
       if (this.selectedCategory === 'scene') {
         this.selectedByField.scene = [tag];
         return;
       }
 
       if (idx === -1) {
-        // body: "良好" 清掉其他不适
         if (this.selectedCategory === 'body' && tag === '良好') {
           this.selectedByField.body = ['良好'];
           return;
         }
-        // body: 选不适标签时清除"良好"
         if (this.selectedCategory === 'body') {
           const gIdx = arr.indexOf('良好');
           if (gIdx !== -1) arr.splice(gIdx, 1);
         }
-        // body: 饥饿/饱腹 互斥
         if (tag === '饥饿' && arr.indexOf('饱腹') !== -1) arr.splice(arr.indexOf('饱腹'), 1);
         if (tag === '饱腹' && arr.indexOf('饥饿') !== -1) arr.splice(arr.indexOf('饥饿'), 1);
-        // body: 感觉冷/热 互斥
         if (tag === '感觉有点冷' && arr.indexOf('感觉有点热') !== -1) arr.splice(arr.indexOf('感觉有点热'), 1);
         if (tag === '感觉有点热' && arr.indexOf('感觉有点冷') !== -1) arr.splice(arr.indexOf('感觉有点冷'), 1);
 
@@ -220,326 +310,442 @@ export default {
       uni.setStorageSync('recommend_input', input);
       console.log('[Frame394] recommend_input saved', JSON.stringify(input));
       uni.redirectTo({ url: '/pages/figma-frame399-preview/figma-frame399-preview' });
+    },
+
+    getTagIcon(tag) {
+      return MOOD_ICON_MAP[tag] || null;
+    },
+
+    calcLayout() {
+      const info = uni.getSystemInfoSync();
+      const { statusBarHeight, windowHeight, screenHeight, safeArea, screenWidth } = info;
+      const rpxRatio = screenWidth / 750;
+
+      this.statusBarHeight = statusBarHeight || 0;
+
+      // 底部安全区（Home Indicator）
+      const safeBottom = (safeArea && typeof safeArea.bottom === 'number') ? safeArea.bottom : screenHeight;
+      this.bottomSafe = Math.max(0, screenHeight - safeBottom);
+
+      // 额外视觉间距（把按钮往上推，避免贴边）: 40rpx → px
+      const extraMarginPx = 40 * rpxRatio;
+      this.bottomBarPadding = this.bottomSafe + extraMarginPx;
+
+      // 导航栏内容高度 88rpx → px
+      const navPx = 88 * rpxRatio;
+      // 底部区可见高度: padding-top(0) + footer-tip(56rpx) + button(88rpx) + extra(40rpx) = 184rpx → px
+      const bottomBarVisiblePx = 184 * rpxRatio;
+
+      // scroll-view 占满剩余空间
+      this.scrollHeight = windowHeight - this.statusBarHeight - navPx - bottomBarVisiblePx;
     }
   }
 };
 </script>
 
 <style scoped>
-.frame-394 {
+.page {
   width: 750rpx;
   height: 100vh;
-  background: #ffffff;
+  background: #fafafa;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.top-bar {
-  background: #ffffff;
+/* ===== 导航栏 ===== */
+.nav-bar {
   width: 750rpx;
-  height: 176rpx;
+  height: 88rpx;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.nav-back {
+  position: absolute;
+  left: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.nav-back-icon {
+  width: 22rpx;
+  height: 38rpx;
+}
+.nav-title {
   position: absolute;
   left: 0;
-  top: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  pointer-events: none;
+  color: #666666;
+  font-family: "PingFangSC-Regular", "Microsoft YaHei", sans-serif;
+  font-size: 32rpx;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.nav-history {
+  position: absolute;
+  right: 24rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666666;
+  font-family: "PingFangSC-Regular", sans-serif;
+  font-size: 26rpx;
+  font-weight: 400;
+  padding: 8rpx 12rpx;
 }
 
-.status-bar {
+/* ===== 可滚动内容 ===== */
+.content-scroll {
+  width: 750rpx;
+}
+
+/* ===== 主标题区 ===== */
+.title-section {
+  width: 750rpx;
+  padding: 24rpx 56rpx 4rpx 56rpx;
+  box-sizing: border-box;
+}
+.main-title-row {
+  display: flex;
+  justify-content: center;
+}
+.hero-title-wrap {
+  position: relative;
+  display: inline-block;
+}
+.main-title {
+  display: block;
+  text-align: center;
+  color: #5c5c5c;
+  font-family: -apple-system, "PingFangSC-Medium", "Microsoft YaHei", sans-serif;
+  font-size: 40rpx;
+  font-weight: 500;
+  line-height: 56rpx;
+}
+.title-leaf {
+  position: absolute;
+  right: -34rpx;
+  top: 2rpx;
+  width: 28rpx;
+  height: 28rpx;
+}
+.subtitle-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 6rpx;
+}
+.subtitle-text {
+  text-align: center;
+  color: #b2b2b2;
+  font-family: -apple-system, "PingFangSC-Regular", "Microsoft YaHei", sans-serif;
+  font-size: 24rpx;
+  font-weight: 400;
+  line-height: 34rpx;
+}
+
+/* ===== 三才卡片 ===== */
+.sancai-card {
+  width: 750rpx;
+  padding: 12rpx 40rpx;
+  box-sizing: border-box;
+}
+.card-bg {
+  width: 670rpx;
+  min-height: 170rpx;
+  border-radius: 20rpx;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 24rpx 20rpx 24rpx 16rpx;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+/* 卡片底色 */
+.card-bg-body {
+  background: #f7f9f9;
+  border: 2rpx solid #eaf4f3;
+}
+.card-bg-mood {
+  background: #fdf6f6;
+  border: 2rpx solid #f9eff0;
+}
+.card-bg-scene {
+  background: #fdf8f4;
+  border: 2rpx solid #faf3ee;
+}
+/* 展开态高亮 */
+.card-active .card-bg {
+  box-shadow: 0px 4rpx 20rpx 0px rgba(88, 187, 171, 0.12);
+}
+.card-active .card-bg-body {
+  border-color: #b8e0d9;
+}
+.card-active .card-bg-mood {
+  border-color: #f0ccd0;
+}
+.card-active .card-bg-scene {
+  border-color: #f0dcd0;
+}
+
+/* ---- 左侧图标 ---- */
+.card-badge-img {
+  width: 96rpx;
+  height: 96rpx;
+  flex-shrink: 0;
+  margin-right: 14rpx;
+}
+
+/* ---- 中间信息区 ---- */
+.card-info {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+.card-label {
+  display: block;
+  color: #6d6b6b;
+  font-family: -apple-system, "PingFangSC-Regular", "Microsoft YaHei", sans-serif;
+  font-size: 28rpx;
+  font-weight: 400;
+  line-height: 38rpx;
+}
+.card-desc-1 {
+  display: block;
+  color: #b8b6b6;
+  font-family: -apple-system, "PingFangSC-Regular", "Microsoft YaHei", sans-serif;
+  font-size: 22rpx;
+  font-weight: 400;
+  line-height: 32rpx;
+  margin-top: 4rpx;
+}
+.card-desc-2 {
+  display: block;
+  color: #b8b6b6;
+  font-family: -apple-system, "PingFangSC-Regular", "Microsoft YaHei", sans-serif;
+  font-size: 22rpx;
+  font-weight: 400;
+  line-height: 30rpx;
+}
+
+/* 已选标签预览 */
+.card-tags-preview {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 10rpx;
+}
+.card-tag-chip {
+  background: rgba(255,255,255,0.8);
+  border: 1rpx solid rgba(88, 187, 171, 0.35);
+  border-radius: 20rpx;
+  padding: 4rpx 16rpx;
+  color: #555555;
+  font-size: 20rpx;
+  font-family: "PingFangSC-Regular", sans-serif;
+  white-space: nowrap;
+}
+
+/* ---- 右侧装饰图 ---- */
+.card-illust {
+  position: absolute;
+  right: 6rpx;
+  bottom: 4rpx;
+  width: 180rpx;
+  height: 140rpx;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
+}
+
+/* ---- 展开箭头 ---- */
+.card-expand-arrow {
+  position: absolute;
+  right: 16rpx;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  width: 36rpx;
+  height: 36rpx;
+  z-index: 1;
+  transition: transform 0.25s;
+}
+.card-expand-arrow-open {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+/* ===== 标签选择面板 ===== */
+.tag-panel {
+  width: 750rpx;
+  padding: 0 40rpx;
+  box-sizing: border-box;
+  margin-top: 18rpx;
+}
+.tag-panel-head {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 780rpx;
-  position: absolute;
-  left: -14rpx;
-  top: 0;
-  padding: 36rpx 52rpx 28rpx 54rpx;
+  padding: 12rpx 0 16rpx 0;
+}
+.tag-panel-title {
+  color: #555555;
+  font-family: "PingFangSC-Medium", sans-serif;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+.tag-panel-collapse {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 16rpx;
+}
+.collapse-ico {
+  width: 26rpx;
+  height: 16rpx;
+}
+.collapse-txt {
+  color: #58bbab;
+  font-family: "PingFangSC-Regular", sans-serif;
+  font-size: 24rpx;
+  font-weight: 400;
+}
+
+/* 标签网格 */
+.tag-panel-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx 16rpx;
+}
+.tag-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  background: #ffffff;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 18rpx;
+  padding: 16rpx 24rpx;
+  min-width: 140rpx;
   box-sizing: border-box;
 }
-.time-wrap {
-  flex-shrink: 0;
-  width: 108rpx;
-  height: 42rpx;
-  position: relative;
-}
-.time {
-  color: #000000;
-  text-align: center;
-  font-family: "SfProText-Semibold", sans-serif;
-  font-size: 34rpx;
-  line-height: 44rpx;
-  letter-spacing: -0.82rpx;
-  font-weight: 600;
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 108rpx;
-}
-.icons-wrap {
-  flex-shrink: 0;
-  width: 156rpx;
-  height: 26rpx;
-  position: relative;
-}
-.icon-battery {
-  width: 54rpx;
-  height: 26rpx;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-.icon-wifi {
+.tag-btn-icon {
   width: 34rpx;
-  height: 24rpx;
-  position: absolute;
-  left: 53rpx;
-  top: 1rpx;
+  height: 34rpx;
+  flex-shrink: 0;
 }
-.icon-cellular {
-  width: 38rpx;
-  height: 24rpx;
-  position: absolute;
-  left: 0;
-  top: 1rpx;
+.tag-btn-text {
+  color: #666666;
+  font-family: "PingFangSC-Regular", sans-serif;
+  font-size: 26rpx;
+  font-weight: 400;
+  white-space: nowrap;
 }
-
-.home-bar {
-  width: 780rpx;
-  height: 38rpx;
-  position: absolute;
-  left: -14rpx;
-  top: 1586rpx;
+/* 选中态 */
+.tag-btn-on {
+  background: #58bdad;
+  border-color: #98d6ce;
 }
-.home-bar-inner {
-  background: #000000;
-  border-radius: 200rpx;
-  width: 268rpx;
-  height: 10rpx;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 16rpx;
+.tag-btn-on .tag-btn-text {
+  color: #ffffff;
 }
 
-.back-hit {
-  position: absolute;
-  left: 24rpx;
-  top: 90rpx;
-  width: 80rpx;
-  height: 80rpx;
-  z-index: 10;
+/* ===== 了解三才 ===== */
+.sancai-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 24rpx 40rpx 0 40rpx;
+  gap: 10rpx;
+}
+.sancai-link-icon {
+  width: 24rpx;
+  height: 24rpx;
+  flex-shrink: 0;
+}
+.sancai-link-label {
+  color: #666666;
+  font-family: "PingFangSC-Regular", sans-serif;
+  font-size: 26rpx;
+  font-weight: 400;
+}
+.sancai-link-text {
+  color: #999999;
+  font-family: "PingFangSC-Regular", sans-serif;
+  font-size: 22rpx;
+  font-weight: 400;
+}
+
+/* ===== 底部文案 ===== */
+.footer-tip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 40rpx 20rpx 40rpx;
+}
+.footer-tip-icon {
+  width: 26rpx;
+  height: 26rpx;
+  flex-shrink: 0;
+  margin-right: 10rpx;
+}
+.footer-tip-text {
+  color: #c3c4c4;
+  font-family: -apple-system, "PingFangSC-Regular", "Microsoft YaHei", sans-serif;
+  font-size: 22rpx;
+  font-weight: 400;
+}
+
+/* ===== 底部留白 ===== */
+.bottom-spacer {
+  height: 48rpx;
+}
+
+/* ===== 底部固定区 ===== */
+.bottom-bar {
+  width: 750rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  background: #fafafa;
+}
+.btn-next {
+  width: 620rpx;
+  height: 88rpx;
+  background: #cccccc;
+  border-radius: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.ico-back {
-  width: 48rpx;
-  height: 48rpx;
-}
-
-.txt-title {
-  color: #333333;
-  text-align: center;
-  font-family: "PingFangSc-Medium", sans-serif;
-  font-size: 32rpx;
-  font-weight: 500;
-  position: absolute;
-  left: 308rpx;
-  top: 108rpx;
-}
-
-.txt-history {
-  color: #333333;
-  text-align: left;
-  font-family: "PingFangSc-Medium", sans-serif;
-  font-size: 32rpx;
-  font-weight: 500;
-  position: absolute;
-  left: 646rpx;
-  top: 108rpx;
-}
-
-/* ===== 状态图标共用 ===== */
-.state-item {
-  position: absolute;
-  z-index: 5;
-}
-.state-glow {
-  border-radius: 50%;
-  width: 156rpx;
-  height: 156rpx;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.state-ring {
-  border-radius: 50%;
-  width: 60rpx;
-  height: 60rpx;
-  position: absolute;
-  left: 46rpx;
-  top: 54rpx;
-  filter: blur(10rpx);
-}
-.state-icon {
-  position: absolute;
-}
-.state-icon-1 {
-  width: 72rpx;
-  height: 54rpx;
-  left: 42rpx;
-  top: 48rpx;
-}
-.state-icon-2 {
-  width: 72rpx;
-  height: 68rpx;
-  left: 42rpx;
-  top: 42rpx;
-}
-.state-icon-3 {
-  width: 78rpx;
-  height: 78rpx;
-  left: 40rpx;
-  top: 37rpx;
-}
-.state-label {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: -32rpx;
-  color: #999;
-  font-family: "ZCOOL XiaoWei", "Songti SC", serif;
-  font-size: 22rpx;
-  white-space: nowrap;
-}
-.state-label-active {
-  color: #333;
-}
-.state-active .state-icon-1,
-.state-active .state-icon-2,
-.state-active .state-icon-3 {
-  transform: scale(1.1);
-}
-
-/* 绿色 — 形（身体状态） */
-.state-item-l1 { left: 100rpx; top: 1120rpx; }
-.state-glow-green {
-  background: #f1fff2;
-  box-shadow: 0px 8rpx 15rpx 0px rgba(133, 210, 199, 0.2);
-  filter: blur(2rpx);
-}
-.state-ring-green { border: 16rpx solid rgba(119, 227, 212, 0.6); }
-
-/* 粉色 — 心（情绪心境） */
-.state-item-l2 { left: 308rpx; top: 1120rpx; }
-.state-glow-pink {
-  background: #fff1f4;
-  box-shadow: 0px 8rpx 15rpx 0px rgba(133, 210, 199, 0.2);
-  filter: blur(2rpx);
-}
-.state-ring-pink { border: 16rpx solid rgba(255, 158, 190, 0.6); }
-
-/* 橙色 — 境（外部环境） */
-.state-item-l3 { left: 516rpx; top: 1120rpx; }
-.state-glow-orange {
-  background: #fff5f1;
-  box-shadow: 0px 8rpx 15rpx 0px rgba(133, 210, 199, 0.2);
-  filter: blur(2rpx);
-}
-.state-ring-orange { border: 16rpx solid rgba(255, 165, 165, 0.6); }
-
-/* ===== 分类标签卡片 ===== */
-.body-card {
-  position: absolute;
-  left: 34rpx;
-  top: 760rpx;
-  width: 682rpx;
-  height: 290rpx;
-  z-index: 2;
-}
-.card-bg {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 682rpx;
-  height: 100%;
-}
-.card-close {
-  position: absolute;
-  right: 24rpx;
-  top: 12rpx;
-  color: #85d2c7;
-  font-family: "PingFangSc-Regular", sans-serif;
-  font-size: 24rpx;
-  z-index: 3;
-  padding: 8rpx 16rpx;
-}
-.card-title {
-  color: #333333;
-  font-family: "ZcoolXiaoWei-Regular", sans-serif;
-  font-size: 32rpx;
-  font-weight: 400;
-  position: absolute;
-  left: 40rpx;
-  top: 44rpx;
-}
-.card-tags {
-  position: absolute;
-  left: 40rpx;
-  top: 100rpx;
-  right: 40rpx;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx 20rpx;
-}
-.card-tag {
-  background: rgba(255, 255, 255, 0.85);
-  border: 2rpx solid transparent;
-  border-radius: 50rpx;
-  padding: 8rpx 20rpx;
-  color: #666666;
-  font-family: "PingFangSc-Regular", sans-serif;
-  font-size: 24rpx;
-  font-weight: 400;
-  white-space: nowrap;
-}
-.tag-selected {
-  border-color: #85d2c7;
-  color: #333333;
-  background: rgba(133, 210, 199, 0.12);
-}
-
-/* ===== 下一步按钮 ===== */
-.btn-next {
-  position: absolute;
-  left: 156rpx;
-  top: 1412rpx;
-  width: 440rpx;
-  height: 80rpx;
-}
-.btn-next-bg {
-  background: #cccccc;
-  border-radius: 60rpx;
-  border: 2rpx solid #ffffff;
-  width: 440rpx;
-  height: 80rpx;
-  position: absolute;
-  left: 0;
-  top: 0;
+.btn-next-active {
+  background: #58bbab;
 }
 .btn-next-text {
   color: #ffffff;
-  text-align: center;
-  font-family: "PingFangSc-Medium", sans-serif;
+  font-family: "PingFangSC-Medium", sans-serif;
   font-size: 32rpx;
   font-weight: 500;
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 440rpx;
-}
-.btn-next-active .btn-next-bg {
-  background: #56bfb0;
 }
 </style>
