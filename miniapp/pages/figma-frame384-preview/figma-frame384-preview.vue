@@ -23,9 +23,9 @@
       <view class="card-bg card-bg2"></view>
       <image class="card2-i1" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-20.png" mode="aspectFill" />
       <image class="card2-i2" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-40.png" mode="aspectFill" />
-      <image class="card2-i3" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-50.png" mode="aspectFill" />
-      <image class="card2-i4" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-60.png" mode="aspectFill" />
-      <image class="card2-i5" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-70.png" mode="aspectFill" />
+      <image class="card2-i3" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-20.png" mode="aspectFill" />
+      <image class="card2-i4" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-20.png" mode="aspectFill" />
+      <image class="card2-i5" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-20.png" mode="aspectFill" />
       <view class="card-label card-label-right">安神匣</view>
     </view>
 
@@ -33,8 +33,8 @@
     <view class="card card-3" @tap="onTap('解郁匣')">
       <view class="card-bg card-bg3"></view>
       <image class="card3-i1" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-21.png" mode="aspectFill" />
-      <image class="card3-i2" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-30.png" mode="aspectFill" />
-      <image class="card3-i3" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-41.png" mode="aspectFill" />
+      <image class="card3-i2" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-20.png" mode="aspectFill" />
+      <image class="card3-i3" src="/static/figma-frame384/_919-fc-7-a-14-d-001-e-23699352-bb-266-f-3917-20.png" mode="aspectFill" />
       <view class="card-label card-label-left">解郁匣</view>
     </view>
 
